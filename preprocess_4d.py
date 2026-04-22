@@ -336,27 +336,43 @@ def save_nifti(us: US4DData, out_path: str | Path = "us4d.nii.gz") -> None:
 # ─────────────────────────────────────────────
 
 if __name__ == "__main__":
-    DICOM_PATH = Path("002A.dcm")
-    OUT_DIR    = Path(".")
+    import nibabel as nib
 
-    # 1. Explore
-    explore_dicom(DICOM_PATH)
+    # JacklynX changed
+    DICOM_FILES = [
+        Path("p009pa.dcm"),
+        Path("p066a.dcm"),
+    ]
 
-    # 2. Load
-    us = load_4d(DICOM_PATH, frame_rate=15.0)
+    for DICOM_PATH in DICOM_FILES:
+        if not DICOM_PATH.exists():
+            print(f"\n[SKIP] {DICOM_PATH} not found")
+            continue
 
-    # 3. Stats
-    print_stats(us)
+        OUT_DIR = Path(DICOM_PATH.stem)
+        OUT_DIR.mkdir(exist_ok=True)
+        print(f"\n{'='*55}")
+        print(f"Processing: {DICOM_PATH}  →  {OUT_DIR}/")
+        print(f"{'='*55}")
 
-    # 4. Visualise
-    plot_orthogonal_slices(us, t=0,
-                           out_path=OUT_DIR / "orthogonal_slices.png")
-    save_time_animation(us, axis="z",
-                        out_path=OUT_DIR / "time_series_z.gif")
+        us = load_4d(DICOM_PATH, frame_rate=15.0)
+        print_stats(us)
 
-    # 5. Save
-    save_npz(us, OUT_DIR / "us4d.npz")
-    save_nifti(us, OUT_DIR / "us4d.nii.gz")
-    save_nifti_slice(us, z=104, out_path=OUT_DIR / "slice_z104.nii.gz")
+        plot_orthogonal_slices(us, t=0,
+                               out_path=OUT_DIR / "orthogonal_slices.png")
+        save_time_animation(us, axis="z",
+                            out_path=OUT_DIR / "time_series_z.gif")
 
-    print("\nDone.")
+        save_npz(us,   OUT_DIR / "us4d.npz")
+        save_nifti(us, OUT_DIR / "us4d.nii.gz")
+
+        data   = us.data[:, :, :, 0].astype(np.uint8)
+        dx, dy, dz = us.scale
+        affine = np.array([[dx,0,0,0],[0,dy,0,0],[0,0,dz,0],[0,0,0,1]])
+        frame0 = nib.Nifti1Image(data, affine)
+        nib.save(frame0, str(OUT_DIR / "frame0_3d.nii.gz"))
+        print(f"[save] frame0_3d.nii.gz saved  shape={data.shape}")
+
+        print(f"Done → {OUT_DIR}/")
+
+    print("\nAll files processed.")
