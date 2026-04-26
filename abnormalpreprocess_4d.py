@@ -91,7 +91,9 @@ def load_4d(path: str | Path, frame_rate: float = 15.0) -> US4DData:
     DIM_OVERRIDE = {
         "p009npa": (224, 208, 208),
         "p009pa":  (224, 208, 224),
-        "p066a":   (192, 160, 208),
+        "p066a":    (192, 160, 208),
+        "p020_1a":  (288, 176, 208),
+        "p030_lp2a":(288, 176, 208),
     }
     stem = Path(path).stem
     if stem in DIM_OVERRIDE:
@@ -308,8 +310,8 @@ if __name__ == "__main__":
 
     # JacklynX changed
     DICOM_FILES = [
-        Path("p009pa.dcm"),
-        Path("p066a.dcm"),
+        Path("p020_1a.dcm"),
+        Path("p030_lp2a.dcm"),
     ]
 
     for DICOM_PATH in DICOM_FILES:

@@ -340,8 +340,7 @@ if __name__ == "__main__":
 
     # JacklynX changed
     DICOM_FILES = [
-        Path("p009pa.dcm"),
-        Path("p066a.dcm"),
+        Path("p020_1a.dcm")
     ]
 
     for DICOM_PATH in DICOM_FILES:
