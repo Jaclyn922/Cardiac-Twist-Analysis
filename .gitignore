@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+ENV/
+.env/
+
+# Data files
+*.csv
+*.json
+*.hdf5
+*.h5
+*.sqlite
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Other common development artifacts
+*.tmp
+*.pid
+*.seed
+*.egg-info/
